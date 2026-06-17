@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hotel Shuffle / Refrain Mobile Concept</title>
+    <meta
+      name="description"
+      content="HOTEL SHUFFLE と HOTEL REFRAIN をスマホで比較し、空室確認へつなげる統合サイトプロトタイプ"
+    />
+    <link rel="preconnect" href="https://hotelshuffle.com" />
+    <link rel="preconnect" href="https://www.hotelrefrain.com" />
+    <link rel="preconnect" href="https://www.booking.com" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <main class="mobile-app" id="top">
+        <header class="app-header" aria-label="サイトヘッダー">
+          <a class="mark" href="#top" aria-label="先頭へ">HS</a>
+          <a class="header-title" href="#top">Hotel Shuffle / Refrain</a>
+          <a class="header-action" href="#choice">選ぶ</a>
+        </header>
+
+        <section class="hero" aria-label="ファーストビュー">
+          <p class="eyebrow">Integrated boutique hotel site</p>
+          <h1>A Hidden Stay<br />in Ikebukuro</h1>
+          <p class="lead">
+            池袋C1出口からすぐ。静かな大人のSHUFFLEと、明るく気軽なREFRAINを横スワイプで比較できます。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button black" href="#choice">ホテルを選ぶ</a>
+            <a class="ghost-button" href="#shuffle">客室を見る</a>
+          </div>
+
+          <div class="swipe-hint" aria-hidden="true">
+            <span></span>
+            写真を横にスワイプ
+          </div>
+
+          <div class="hero-gallery" data-track="gallery" aria-label="ホテル写真ギャラリー">
+            <figure class="gallery-card gallery-feature">
+              <img src="https://hotelshuffle.com/images/hotel-shuffle-fv.png" alt="HOTEL SHUFFLEのエントランス" />
+              <figcaption>SHUFFLE entrance</figcaption>
+            </figure>
+            <figure class="gallery-card">
+              <img src="https://hotelshuffle.com/images/room-505.webp" alt="HOTEL SHUFFLEの客室" />
+              <figcaption>Adult room</figcaption>
+            </figure>
+            <figure class="gallery-card">
+              <img src="https://www.hotelrefrain.com/images/rooms/r402a_upscaled.jpg" alt="HOTEL REFRAINの明るい客室" />
+              <figcaption>Casual design</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="choice-section" id="choice" aria-labelledby="choice-heading">
+          <p class="eyebrow">Top structure</p>
+          <h2 id="choice-heading">一本先で、<br />気分を選ぶ。</h2>
+          <p class="choice-lead">大人な夜はSHUFFLE。明るく楽しむ日はREFRAIN。</p>
+          <div class="choice-road-label" aria-hidden="true">IKEBUKURO SIDE STREET</div>
+
+          <div class="choice-track" data-track="choice" aria-label="ホテル選択">
+            <a class="choice-card choice-shuffle" href="#shuffle">
+              <img src="https://hotelshuffle.com/images/hotel-shuffle-fv.png" alt="HOTEL SHUFFLEの外観" />
+              <div>
+                <span>HOTEL SHUFFLE</span>
+                <strong>静かな大人の隠れ家。</strong>
+                <small>上質 / 記念日 / 落ち着いたデート</small>
+                <b>SHUFFLEを見る</b>
+              </div>
+            </a>
+
+            <a class="choice-card choice-refrain" href="#refrain">
+              <img src="https://www.hotelrefrain.com/images/rooms/r402a_upscaled.jpg" alt="HOTEL REFRAINの明るい客室" />
+              <div>
+                <span>HOTEL REFRAIN</span>
+                <strong>明るく気軽に楽しむホテル。</strong>
+                <small>カジュアル / 女子会 / 推し活</small>
+                <b>REFRAINを見る</b>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <section class="brand-section shuffle-section" id="shuffle" aria-labelledby="shuffle-heading">
+          <div class="section-head">
+            <div>
+              <p class="section-label">Quiet luxury</p>
+              <h2 id="shuffle-heading">HOTEL SHUFFLE</h2>
+            </div>
+            <span class="story-count" data-count-for="shuffle">1 / 4</span>
+          </div>
+          <p class="swipe-note">横にスワイプして、6枚の写真と予約導線を見る</p>
+
+          <div class="story-track" data-track="shuffle" aria-label="HOTEL SHUFFLEの横スワイプ">
+            <article class="story-card visual-story">
+              <img src="https://hotelshuffle.com/images/hotel-shuffle-fv.png" alt="HOTEL SHUFFLE エントランス" />
+              <div class="photo-shade"></div>
+              <div class="visual-copy">
+                <p>Adult private stay</p>
+                <h3>大人な夜は、SHUFFLE。</h3>
+                <a class="primary-button gold" href="https://hotelshuffle.com/" target="_blank" rel="noreferrer">
+                  公式サイトへ
+                </a>
+              </div>
+            </article>
+
+            <article class="story-card room-story">
+              <div class="room-collage">
+                <img src="https://hotelshuffle.com/images/room-505.webp" alt="SHUFFLE ROOM 505" />
+                <img src="https://hotelshuffle.com/images/room-501.webp" alt="SHUFFLE ROOM 501" />
+              </div>
+              <div class="story-body">
+                <p class="card-label">Rooms</p>
+                <h3>静かに浸る客室。</h3>
+                <div class="tag-row">
+                  <span>上質</span>
+                  <span>静か</span>
+                  <span>隠れ家</span>
+                  <span>記念日</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card photo-story">
+              <img src="https://hotelshuffle.com/images/room-202.webp" alt="SHUFFLE ROOM 202" />
+              <div class="story-body">
+                <p class="card-label">Room 202</p>
+                <h3>やわらかな光の客室。</h3>
+                <div class="tag-row">
+                  <span>清潔感</span>
+                  <span>落ち着き</span>
+                  <span>2名</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card photo-story">
+              <img src="https://hotelshuffle.com/images/room-401.webp" alt="SHUFFLE ROOM 401" />
+              <div class="story-body">
+                <p class="card-label">Room 401</p>
+                <h3>上質に過ごす夜。</h3>
+                <div class="tag-row">
+                  <span>大人</span>
+                  <span>上質</span>
+                  <span>隠れ家</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card reason-story">
+              <img src="https://hotelshuffle.com/images/bath-equip.webp" alt="SHUFFLEの浴室設備" />
+              <div class="story-body">
+                <p class="card-label">Choose for</p>
+                <h3>落ち着きを選ぶ日。</h3>
+                <ul>
+                  <li>黒とゴールドで上質に。</li>
+                  <li>隠れ家感が最初に伝わる。</li>
+                  <li>デートや記念日に向く。</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="story-card official-story">
+              <div class="route-map dark-map">
+                <span>C1</span>
+                <strong>1 min</strong>
+              </div>
+              <div class="story-body">
+                <p class="card-label">Vacancy</p>
+                <h3>大人ステイを空室確認へ。</h3>
+                <div class="assurance-list">
+                  <span>池袋C1出口から徒歩すぐ</span>
+                  <span>料金と空室は予約サイトで確認</span>
+                </div>
+                <a class="primary-button black" href="https://www.booking.com/hotel/jp/shuffle.ja.html" target="_blank" rel="noreferrer">
+                  SHUFFLE空室
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="brand-section refrain-section" id="refrain" aria-labelledby="refrain-heading">
+          <div class="section-head">
+            <div>
+              <p class="section-label">Casual design</p>
+              <h2 id="refrain-heading">HOTEL REFRAIN</h2>
+            </div>
+            <span class="story-count" data-count-for="refrain">1 / 4</span>
+          </div>
+          <p class="swipe-note">横にスワイプして、6枚の写真と予約導線を見る</p>
+
+          <div class="story-track" data-track="refrain" aria-label="HOTEL REFRAINの横スワイプ">
+            <article class="story-card visual-story light-visual">
+              <img src="https://www.hotelrefrain.com/images/rooms/r402a_upscaled.jpg" alt="HOTEL REFRAIN ROOM 402" />
+              <div class="photo-shade soft"></div>
+              <div class="visual-copy">
+                <p>Bright casual stay</p>
+                <h3>気軽に楽しむ日は、REFRAIN。</h3>
+                <a class="primary-button wine" href="https://www.hotelrefrain.com/" target="_blank" rel="noreferrer">
+                  公式サイトへ
+                </a>
+              </div>
+            </article>
+
+            <article class="story-card room-story">
+              <div class="room-collage">
+                <img src="https://www.hotelrefrain.com/images/rooms/r507a_upscaled.jpg" alt="REFRAIN ROOM 507" />
+                <img src="https://www.hotelrefrain.com/images/rooms/r201a_upscaled.jpg" alt="REFRAIN ROOM 201" />
+              </div>
+              <div class="story-body">
+                <p class="card-label">Rooms</p>
+                <h3>明るく選べる客室。</h3>
+                <div class="tag-row casual-tags">
+                  <span>カジュアル</span>
+                  <span>明るい</span>
+                  <span>女子会</span>
+                  <span>推し活</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card photo-story">
+              <img src="https://www.hotelrefrain.com/images/rooms/r301a_upscaled.jpg" alt="REFRAIN ROOM 301" />
+              <div class="story-body">
+                <p class="card-label">Room 301</p>
+                <h3>写真映えする明るさ。</h3>
+                <div class="tag-row casual-tags">
+                  <span>明るい</span>
+                  <span>女子会</span>
+                  <span>2名</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card photo-story">
+              <img src="https://www.hotelrefrain.com/images/rooms/r302a_upscaled.jpg" alt="REFRAIN ROOM 302" />
+              <div class="story-body">
+                <p class="card-label">Room 302</p>
+                <h3>気軽に楽しむ客室。</h3>
+                <div class="tag-row casual-tags">
+                  <span>カジュアル</span>
+                  <span>推し活</span>
+                  <span>ホテルステイ</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="story-card reason-story">
+              <img src="https://www.hotelrefrain.com/images/rooms/r203a_upscaled.jpg" alt="REFRAIN ROOM 203" />
+              <div class="story-body">
+                <p class="card-label">Choose for</p>
+                <h3>写真も会話も弾む日。</h3>
+                <ul>
+                  <li>白ベースで明るく。</li>
+                  <li>写真映えを想像しやすい。</li>
+                  <li>女子会・推し活に向く。</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="story-card official-story">
+              <div class="route-map casual-map">
+                <span>C1</span>
+                <strong>Refrain</strong>
+              </div>
+              <div class="story-body">
+                <p class="card-label">Vacancy</p>
+                <h3>カジュアルステイを空室確認へ。</h3>
+                <div class="assurance-list">
+                  <span>池袋C1出口から徒歩すぐ</span>
+                  <span>料金と空室は予約サイトで確認</span>
+                </div>
+                <a class="primary-button wine" href="https://www.booking.com/hotel/jp/refrain.ja.html?aid=2429684&amp;dist=0&amp;group_adults=2&amp;keep_landing=1&amp;no_rooms=1&amp;sb_price_type=total&amp;type=total" target="_blank" rel="noreferrer">
+                  REFRAIN空室
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="closing-note" aria-label="予約前の確認">
+          <p class="eyebrow">Before booking</p>
+          <h2>迷ったら、気分で選ぶ。</h2>
+
+          <div class="mini-faq" aria-label="よくある質問">
+            <article>
+              <span>予約先</span>
+              <p>空室と料金は予約サイトで確認できます。</p>
+            </article>
+            <article>
+              <span>アクセス</span>
+              <p>どちらも池袋C1出口から徒歩すぐです。</p>
+            </article>
+            <article>
+              <span>ホテルの選び方</span>
+              <p>静かに過ごすならSHUFFLE、明るく楽しむならREFRAIN。</p>
+            </article>
+          </div>
+
+          <div class="production-note">
+            <p class="eyebrow">Next phase</p>
+            <ul>
+              <li>画像はpublic/imagesへ保存</li>
+              <li>予約URLはデータ管理</li>
+              <li>OGP/SEO/構造化データ/アクセス情報を追加</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <aside class="decision-helper" aria-label="ホテル選択補助">
+      <span>静かに過ごすならSHUFFLE</span>
+      <span>明るく楽しむならREFRAIN</span>
+    </aside>
+
+    <nav class="bottom-nav" aria-label="固定ナビゲーション">
+      <a href="https://www.booking.com/hotel/jp/shuffle.ja.html" target="_blank" rel="noreferrer">SHUFFLE空室</a>
+      <a href="#shuffle">客室</a>
+      <a href="https://www.booking.com/hotel/jp/refrain.ja.html?aid=2429684&amp;dist=0&amp;group_adults=2&amp;keep_landing=1&amp;no_rooms=1&amp;sb_price_type=total&amp;type=total" target="_blank" rel="noreferrer">REFRAIN空室</a>
+    </nav>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

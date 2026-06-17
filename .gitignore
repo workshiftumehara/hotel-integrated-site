@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+build/
+
+*.log
+screenshots*.png
+.chrome-shot*/
+
+.env
+.env*.local
+.vercel/
+.codex-preview/

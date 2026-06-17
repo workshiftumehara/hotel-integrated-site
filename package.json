@@ -1,0 +1,18 @@
+{
+  "name": "hotel-shuffle-refrain",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:private": "next dev -H 127.0.0.1 -p 3045",
+    "build": "next build",
+    "start": "next start",
+    "start:private": "next start -H 127.0.0.1 -p 3045"
+  },
+  "dependencies": {
+    "next": "^15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {}
+}
