@@ -66,9 +66,6 @@ function HotelTileGallery({ hotel, priority }) {
           {slideIndex > 0 ? <figcaption>{slide.label}</figcaption> : null}
         </figure>
       ))}
-      <span className="tile-swipe-hint" aria-hidden="true">
-        Swipe / 客室を横にスワイプ
-      </span>
     </div>
   );
 }
