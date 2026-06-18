@@ -1,4 +1,5 @@
 import HomePage from "@/components/HomePage";
+import UrlCleanup from "@/components/UrlCleanup";
 import { faqs, hotels } from "@/lib/hotels";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shuffle-refrain.com";
@@ -122,6 +123,7 @@ export default function Page() {
 
   return (
     <>
+      <UrlCleanup />
       <HomePage />
       <script
         type="application/ld+json"
