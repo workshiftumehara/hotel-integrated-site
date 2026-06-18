@@ -109,14 +109,19 @@ function GridTile({ tile, index }) {
 
   if (tile.kind === "photo") {
     return (
-      <article className="grid-tile tile-photo" style={{ "--delay": `${index * 45}ms` }}>
+      <a
+        className="grid-tile tile-photo"
+        href="#stay"
+        style={{ "--delay": `${index * 45}ms` }}
+        aria-label="滞在シーンへ移動"
+      >
         <SmartImage src={tile.src} alt={tile.alt} sizes="(min-width: 980px) 33vw, 100vw" />
         <div className="tile-shade" />
         <div className="tile-content">
           <span className="tile-label">{tile.label}</span>
           <h2>{tile.title}</h2>
         </div>
-      </article>
+      </a>
     );
   }
 
@@ -356,7 +361,7 @@ function HotelSection({ hotel }) {
 
 function StayScenesSection() {
   return (
-    <section className="section-band stay-band" aria-labelledby="stay-heading">
+    <section className="section-band stay-band" id="stay" aria-labelledby="stay-heading">
       <div className="section-heading">
         <span className="tile-label">Stay Scene</span>
         <h2 id="stay-heading">泊まる前に、過ごし方を想像する。</h2>

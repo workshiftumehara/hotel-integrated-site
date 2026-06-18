@@ -2717,6 +2717,12 @@ main {
     #ffffff;
 }
 
+.tile-photo {
+  color: var(--ivory);
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .tile-price h2 {
   margin-bottom: 12px;
 }
