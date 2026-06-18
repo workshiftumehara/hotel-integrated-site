@@ -339,7 +339,7 @@ function StayScenesSection() {
     <section className="section-band stay-band" id="stay" aria-labelledby="stay-heading">
       <div className="section-heading">
         <span className="tile-label">Stay Scene</span>
-        <h2 id="stay-heading">泊まる前に、過ごし方を想像する。</h2>
+        <h2 id="stay-heading">ふたりの夜に、ちょうどいい空気を。</h2>
       </div>
       <div className="stay-scene-grid">
         {hotels.map((hotel) => (
