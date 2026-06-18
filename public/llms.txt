@@ -1,0 +1,33 @@
+# HOTEL SHUFFLE / REFRAIN
+
+This site compares two hotels near Ikebukuro Station C1 Exit in Tokyo: HOTEL SHUFFLE and HOTEL REFRAIN.
+
+## Primary page
+
+- https://shuffle-refrain.com/hotel-integrated-3x3
+- https://shuffle-refrain.com/shuffle
+- https://shuffle-refrain.com/refrain
+- https://shuffle-refrain.com/price
+- https://shuffle-refrain.com/access
+
+## What the page contains
+
+- Hotel comparison for HOTEL SHUFFLE and HOTEL REFRAIN.
+- Price guide for REST and STAY use.
+- Google Map embeds and map links for both hotels.
+- Room photos and stay-scene photos.
+- Booking links for each hotel.
+- FAQ content for reservation flow, access, and choosing between the hotels.
+
+## Quick facts
+
+- HOTEL SHUFFLE: refined, calm stay near Ikebukuro Station C1 Exit.
+- HOTEL REFRAIN: casual, bright stay near Ikebukuro Station C1 Exit.
+- HOTEL SHUFFLE address: 2-16-4 Ikebukuro, Toshima-ku, Tokyo 171-0014, Japan.
+- HOTEL REFRAIN address: 2-16-5 Ikebukuro, Toshima-ku, Tokyo 171-0014, Japan.
+- HOTEL SHUFFLE phone: 03-3982-8071.
+- HOTEL REFRAIN phone: 03-5950-2717.
+
+## Machine-readable pricing
+
+- /pricing.md

@@ -1,8 +1,9 @@
 import "./globals.css";
+import Analytics from "@/components/Analytics";
 
 export const metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://shuffle-refrain.com",
   ),
   title: "制作物ライブラリ | HP・LPデザイン一覧",
   description:
@@ -33,7 +34,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
