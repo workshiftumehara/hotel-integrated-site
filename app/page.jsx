@@ -1,80 +1,132 @@
-import Image from "next/image";
-import { designProjects } from "@/lib/designs";
+import HomePage from "@/components/HomePage";
+import { faqs, hotels } from "@/lib/hotels";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shuffle-refrain.com";
+
+export const metadata = {
+  title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
+  description:
+    "池袋駅C1出口近くのHOTEL SHUFFLEとHOTEL REFRAINを、料金、客室写真、地図、予約導線までまとめて比較できます。",
+  keywords: [
+    "池袋 ホテル",
+    "池袋 ラブホテル",
+    "HOTEL SHUFFLE",
+    "HOTEL REFRAIN",
+    "池袋 ホテル 料金",
+    "池袋 ホテル 地図",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
+    description:
+      "料金、Google Map、客室写真、予約導線まで一画面で比較。池袋駅C1出口近くの2ホテルを気分で選べます。",
+    url: "/",
+    siteName: "HOTEL SHUFFLE / REFRAIN",
+    type: "website",
+    locale: "ja_JP",
+    images: [
+      {
+        url: "/images/hotel-shuffle-fv.png",
+        width: 1200,
+        height: 900,
+        alt: "HOTEL SHUFFLE 池袋",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
+    description:
+      "池袋駅C1出口近くの2ホテルを、料金・地図・客室写真で比較できます。",
+    images: ["/images/hotel-shuffle-fv.png"],
+  },
+};
+
+function offerListForHotel(hotel) {
+  return hotel.pricePlans.flatMap((plan) =>
+    plan.rows.map((row) => ({
+      "@type": "Offer",
+      name: `${hotel.shortName} ${plan.name} ${row.label}`,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        priceCurrency: "JPY",
+        description: row.value,
+      },
+      availability: "https://schema.org/InStock",
+      url: hotel.bookingUrl,
+    })),
+  );
+}
 
 export default function Page() {
-  const updatedDate = new Intl.DateTimeFormat("ja-JP", {
-    dateStyle: "long",
-  }).format(new Date("2026-06-17"));
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        name: "HOTEL SHUFFLE / REFRAIN",
+        url: siteUrl,
+        inLanguage: "ja",
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${siteUrl}/#webpage`,
+        url: siteUrl,
+        name: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
+        description:
+          "池袋駅C1出口近くのHOTEL SHUFFLEとHOTEL REFRAINを、料金、Google Map、客室写真、予約導線で比較できるページです。",
+        isPartOf: { "@id": `${siteUrl}/#website` },
+        about: hotels.map((hotel) => ({ "@id": `${siteUrl}/#${hotel.id}` })),
+        dateModified: "2026-06-18",
+        inLanguage: "ja",
+      },
+      ...hotels.map((hotel) => ({
+        "@type": ["Hotel", "LodgingBusiness"],
+        "@id": `${siteUrl}/#${hotel.id}`,
+        name: hotel.name,
+        alternateName: hotel.shortName,
+        description: hotel.seoDescription || hotel.description,
+        url: hotel.officialUrl,
+        telephone: hotel.telephone,
+        image: [hotel.image, ...hotel.rooms.map((room) => room.src)],
+        priceRange: hotel.priceGuide,
+        hasMap: hotel.mapUrl,
+        address: {
+          "@type": "PostalAddress",
+          postalCode: hotel.address.postalCode,
+          streetAddress: hotel.address.streetAddress,
+          addressLocality: hotel.address.addressLocality,
+          addressRegion: hotel.address.addressRegion,
+          addressCountry: hotel.address.addressCountry,
+        },
+        makesOffer: offerListForHotel(hotel),
+        sameAs: [hotel.officialUrl, hotel.mapUrl],
+      })),
+      {
+        "@type": "FAQPage",
+        "@id": `${siteUrl}/#faq`,
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+    ],
+  };
 
   return (
-    <main className="library-shell">
-      <header className="library-hero">
-        <div>
-          <p className="eyebrow">Design Library</p>
-          <h1>作ったHP・LPを、ここからすぐ見る。</h1>
-        </div>
-        <p>
-          公開済みサイトとローカル作業フォルダをまとめた一覧です。サムネイルで見分けて、
-          必要なページをすぐ開けます。
-        </p>
-      </header>
-
-      <section className="summary-strip" aria-label="制作物の概要">
-        <article>
-          <span>{designProjects.length}</span>
-          <p>登録済み</p>
-        </article>
-        <article>
-          <span>HP / LP</span>
-          <p>制作物タイプ</p>
-        </article>
-        <article>
-          <span>{updatedDate}</span>
-          <p>最終整理日</p>
-        </article>
-      </section>
-
-      <section className="project-grid" aria-label="制作物一覧">
-        {designProjects.map((project) => (
-          <article className={`project-card ${project.accent}`} key={project.id}>
-            <a
-              className="project-shot"
-              href={project.url}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`${project.title}を開く`}
-            >
-              <Image
-                src={project.image}
-                alt={`${project.title}のスクリーンショット`}
-                width={1200}
-                height={760}
-                sizes="(min-width: 980px) 33vw, 100vw"
-                priority={project.id === "hotel-shuffle"}
-              />
-            </a>
-            <div className="project-body">
-              <div className="project-meta">
-                <span>{project.type}</span>
-                <span>{project.status}</span>
-              </div>
-              <h2>{project.title}</h2>
-              <p>{project.description}</p>
-              <div className="tag-row">
-                {project.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-              <div className="project-actions">
-                <a href={project.url} target="_blank" rel="noreferrer">
-                  サイトを見る
-                </a>
-                <code title={project.localPath}>{project.localPath}</code>
-              </div>
-            </div>
-          </article>
-        ))}
-      </section>
-    </main>
+    <>
+      <HomePage />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+    </>
   );
 }

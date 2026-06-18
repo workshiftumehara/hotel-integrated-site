@@ -2,7 +2,7 @@ import Image from "next/image";
 import { hotels } from "@/lib/hotels";
 
 const siteNav = [
-  { href: "/hotel-integrated-3x3", label: "比較トップ" },
+  { href: "/", label: "比較トップ" },
   { href: "/shuffle", label: "SHUFFLE" },
   { href: "/refrain", label: "REFRAIN" },
   { href: "/price", label: "料金" },
@@ -21,7 +21,7 @@ function SubPageShell({ eyebrow, title, lead, children }) {
   return (
     <>
       <header className="subpage-header">
-        <a className="top-bar-brand" href="/hotel-integrated-3x3">
+        <a className="top-bar-brand" href="/">
           SHUFFLE / REFRAIN
         </a>
         <nav aria-label="サイト内ページ">

@@ -5,7 +5,7 @@ export default function sitemap() {
 
   return [
     {
-      url: `${siteUrl}/hotel-integrated-3x3`,
+      url: `${siteUrl}/`,
       lastModified,
       changeFrequency: "weekly",
       priority: 1,

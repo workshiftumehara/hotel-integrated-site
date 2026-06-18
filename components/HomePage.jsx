@@ -386,7 +386,7 @@ export default function HomePage() {
   return (
     <>
       <header className="top-bar" aria-label="ページナビゲーション">
-        <a className="top-bar-brand" href="#top" aria-label="ページ上部へ">
+        <a className="top-bar-brand" href="/" aria-label="ページ上部へ">
           SHUFFLE / REFRAIN
         </a>
         <nav aria-label="主要セクション">

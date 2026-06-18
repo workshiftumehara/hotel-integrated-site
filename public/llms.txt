@@ -4,7 +4,7 @@ This site compares two hotels near Ikebukuro Station C1 Exit in Tokyo: HOTEL SHU
 
 ## Primary page
 
-- https://shuffle-refrain.com/hotel-integrated-3x3
+- https://shuffle-refrain.com/
 - https://shuffle-refrain.com/shuffle
 - https://shuffle-refrain.com/refrain
 - https://shuffle-refrain.com/price
