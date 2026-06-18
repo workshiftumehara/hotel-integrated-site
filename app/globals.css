@@ -2679,6 +2679,28 @@ main {
   box-shadow: 0 10px 24px rgba(14, 27, 37, 0.16);
 }
 
+.tile-swipe-hint {
+  position: absolute;
+  right: 14px;
+  top: 56px;
+  z-index: 3;
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 7px 10px;
+  color: rgba(255, 250, 240, 0.92);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  background: rgba(11, 23, 35, 0.56);
+  border: 1px solid rgba(255, 250, 240, 0.24);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(8, 12, 18, 0.24);
+  backdrop-filter: blur(10px);
+}
+
 .tile-hotel .tile-shade {
   pointer-events: none;
 }
