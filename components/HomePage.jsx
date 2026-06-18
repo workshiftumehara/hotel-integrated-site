@@ -43,6 +43,33 @@ function PriceGuide({ children }) {
   );
 }
 
+function HotelTileGallery({ hotel, priority }) {
+  const slides = [
+    {
+      src: hotel.image,
+      alt: `${hotel.name}の外観・客室イメージ`,
+      label: "Hotel",
+    },
+    ...hotel.rooms,
+  ];
+
+  return (
+    <div className="tile-room-rail" aria-label={`${hotel.name}の客室写真`}>
+      {slides.map((slide, slideIndex) => (
+        <figure className="tile-room-slide" key={`${hotel.id}-${slide.src}-${slideIndex}`}>
+          <SmartImage
+            src={slide.src}
+            alt={slide.alt}
+            priority={priority && slideIndex === 0}
+            sizes="(min-width: 980px) 33vw, 100vw"
+          />
+          <figcaption>{slide.label}</figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
 function GridTile({ tile, index }) {
   const hotel = tile.hotelId ? hotelById[tile.hotelId] : null;
 
@@ -63,12 +90,7 @@ function GridTile({ tile, index }) {
   if (tile.kind === "hotel") {
     return (
       <article className={`grid-tile tile-hotel ${hotel.theme}`} style={{ "--delay": `${index * 45}ms` }}>
-        <SmartImage
-          src={hotel.image}
-          alt={`${hotel.name}の外観・客室イメージ`}
-          priority={index < 3}
-          sizes="(min-width: 980px) 33vw, 100vw"
-        />
+        <HotelTileGallery hotel={hotel} priority={index < 3} />
         <div className="tile-shade" />
         <div className="tile-content">
           <span className="tile-label">{hotel.label}</span>
