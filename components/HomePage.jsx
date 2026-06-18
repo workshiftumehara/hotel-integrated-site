@@ -63,7 +63,7 @@ function HotelTileGallery({ hotel, priority }) {
             priority={priority && slideIndex === 0}
             sizes="(min-width: 980px) 33vw, 100vw"
           />
-          <figcaption>{slide.label}</figcaption>
+          {slideIndex > 0 ? <figcaption>{slide.label}</figcaption> : null}
         </figure>
       ))}
       <span className="tile-swipe-hint" aria-hidden="true">
