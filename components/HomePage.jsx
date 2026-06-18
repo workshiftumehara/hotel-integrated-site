@@ -232,11 +232,7 @@ function PriceTableSection() {
 
 function SearchSummarySection() {
   return (
-    <section className="section-band search-summary" aria-labelledby="search-summary-heading">
-      <div className="section-heading">
-        <span className="tile-label">Quick Answer</span>
-        <h2 id="search-summary-heading">池袋でホテルを選ぶなら</h2>
-      </div>
+    <section className="section-band search-summary" aria-label="ホテル選びの要約">
       <div className="answer-grid">
         <article>
           <h3>SHUFFLE</h3>
