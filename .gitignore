@@ -9,6 +9,8 @@ screenshots*.png
 .chrome-shot*/
 
 .env
+.env.*
 .env*.local
+!.env.example
 .vercel/
 .codex-preview/
