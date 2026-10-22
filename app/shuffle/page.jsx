@@ -1,4 +1,5 @@
 import { HotelDetailPage } from "@/components/HotelSubPages";
+import LineSignupPopup from "@/components/LineSignupPopup";
 
 export const metadata = {
   title: "HOTEL SHUFFLE 詳細｜料金・客室・アクセス",
@@ -9,5 +10,10 @@ export const metadata = {
 };
 
 export default function ShufflePage() {
-  return <HotelDetailPage hotelId="shuffle" />;
+  return (
+    <>
+      <HotelDetailPage hotelId="shuffle" />
+      <LineSignupPopup siteId="shuffle" />
+    </>
+  );
 }

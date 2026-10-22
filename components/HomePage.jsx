@@ -1,383 +1,150 @@
 import Image from "next/image";
-import { faqs, gridTiles, hotels } from "@/lib/hotels";
+import Reveal from "@/components/Reveal";
+import LineSignupPopup from "@/components/LineSignupPopup";
+import { faqs, hotels } from "@/lib/hotels";
 
-const hotelById = Object.fromEntries(hotels.map((hotel) => [hotel.id, hotel]));
-const bookingTileKinds = new Set(["booking", "faq"]);
+const [shuffle, refrain] = hotels;
 
-function SmartImage({ src, alt, priority = false, sizes = "100vw" }) {
+const moodRows = [
+  {
+    axis: "Mood",
+    shuffle: "落ち着いた上質感",
+    refrain: "気軽で明るい雰囲気",
+  },
+  {
+    axis: "Best for",
+    shuffle: shuffle.bestFor.join("・"),
+    refrain: refrain.bestFor.join("・"),
+  },
+  {
+    axis: "Price",
+    shuffle: shuffle.priceGuide,
+    refrain: refrain.priceGuide,
+  },
+];
+
+function Arrow() {
   return (
-    <Image
-      src={src}
-      alt={alt}
-      width={1400}
-      height={1000}
-      sizes={sizes}
-      priority={priority}
-    />
-  );
-}
-
-function ArrowIcon() {
-  return (
-    <span aria-hidden="true" className="arrow-icon">
+    <span aria-hidden="true" className="arrow">
       →
     </span>
   );
 }
 
-function ExternalLink({ href, children, variant = "dark" }) {
-  return (
-    <a className={`action-link ${variant}`} href={href} target="_blank" rel="noreferrer">
-      <span>{children}</span>
-      <ArrowIcon />
-    </a>
-  );
-}
+function HeroPanel({ hotel, catchCopy, priority }) {
+  const isShuffle = hotel.theme === "shuffle";
 
-function PriceGuide({ children }) {
   return (
-    <div className="price-guide" aria-label="料金の目安">
-      <span>Price</span>
-      <strong>{children}</strong>
+    <div className={`hero-panel ${hotel.theme}`}>
+      <div className="hero-media">
+        <Image
+          src={hotel.image}
+          alt={`${hotel.name}のイメージ`}
+          fill
+          priority={priority}
+          sizes="(min-width: 981px) 50vw, 100vw"
+          style={{ objectFit: "cover" }}
+        />
+      </div>
+      <div className="hero-content">
+        <span className="en-label">{hotel.label}</span>
+        <h2>{hotel.shortName}</h2>
+        <p className="hero-copy">{catchCopy}</p>
+        <div className="hero-cta-row">
+          <a
+            className={`btn ${isShuffle ? "gold" : "wine"}`}
+            href={hotel.officialUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            公式HP <Arrow />
+          </a>
+          <a className="text-link" href={hotel.officialUrl} target="_blank" rel="noreferrer">
+            詳しく <Arrow />
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
 
-function GridTile({ tile, index }) {
-  const hotel = tile.hotelId ? hotelById[tile.hotelId] : null;
+function HotelBand({ hotel, num, catchCopy, railId }) {
+  const isShuffle = hotel.theme === "shuffle";
 
-  if (tile.kind === "intro") {
-    return (
-      <article className="grid-tile tile-intro" style={{ "--delay": `${index * 45}ms` }}>
-        <div className="hero-copy">
-          <h1>{tile.title}</h1>
-        </div>
-        <div className="intro-actions">
-          <a href="#price">料金を見る</a>
-          <a href="#rooms">客室を見る</a>
-        </div>
-      </article>
-    );
-  }
-
-  if (tile.kind === "hotel") {
-    return (
-      <article className={`grid-tile tile-hotel ${hotel.theme}`} style={{ "--delay": `${index * 45}ms` }}>
-        <SmartImage
-          src={hotel.image}
-          alt={`${hotel.name}の外観・客室イメージ`}
-          priority={index < 3}
-          sizes="(min-width: 980px) 33vw, 100vw"
-        />
-        <div className="tile-shade" />
-        <div className="tile-content">
-          <span className="tile-label">{hotel.label}</span>
-          <h2>{hotel.shortName}</h2>
-          <p>{hotel.summary}</p>
-          <a href={`#${hotel.id}`} aria-label={`${hotel.name}の詳細へ`}>
-            詳細を見る <ArrowIcon />
+  return (
+    <section
+      className={`band ${isShuffle ? "dark" : "light"}`}
+      id={hotel.id}
+      aria-labelledby={`${hotel.id}-heading`}
+    >
+      <div className="band-inner">
+        <span className="ghost-num" aria-hidden="true">
+          {num}
+        </span>
+        <div className="hotel-head" data-reveal>
+          <div>
+            <span className={`en-label ${isShuffle ? "" : "wine"}`}>{hotel.label}</span>
+            <h2 id={`${hotel.id}-heading`}>{hotel.shortName}</h2>
+            <p className="hotel-catch">{catchCopy}</p>
+          </div>
+          <a className="text-link" href={hotel.officialUrl} target="_blank" rel="noreferrer">
+            公式サイト <Arrow />
           </a>
         </div>
-      </article>
-    );
-  }
 
-  if (tile.kind === "photo") {
-    return (
-      <a
-        className="grid-tile tile-photo"
-        href="#stay"
-        style={{ "--delay": `${index * 45}ms` }}
-        aria-label="滞在シーンへ移動"
-      >
-        <SmartImage src={tile.src} alt={tile.alt} sizes="(min-width: 980px) 33vw, 100vw" />
-        <div className="tile-shade" />
-        <div className="tile-content">
-          <span className="tile-label">{tile.label}</span>
-          <h2>{tile.title}</h2>
-        </div>
-      </a>
-    );
-  }
-
-  if (tile.kind === "booking") {
-    return (
-      <article className={`grid-tile tile-booking ${hotel.theme}`} style={{ "--delay": `${index * 45}ms` }}>
-        <span className="tile-label">Booking</span>
-        <h2>{hotel.shortName}</h2>
-        <p>空室・料金・予約条件は、予約ページで最新情報を確認してください。</p>
-        <ExternalLink href={hotel.bookingUrl} variant={hotel.theme === "shuffle" ? "gold" : "wine"}>
-          空室確認
-        </ExternalLink>
-      </article>
-    );
-  }
-
-  if (tile.kind === "price") {
-    return (
-      <article className="grid-tile tile-price" style={{ "--delay": `${index * 45}ms` }}>
-        <span className="tile-label">{tile.label}</span>
-        <div className="price-mini-list">
-          {hotels.map((item) => (
-            <a className={`price-mini-row ${item.theme}`} href="#price" key={item.id}>
-              <span>{item.shortName}</span>
-              <strong>{item.priceGuide}</strong>
-            </a>
+        <div className="room-rail" id={railId} data-reveal style={{ "--d": "120ms" }}>
+          {hotel.rooms.map((room) => (
+            <figure className="room-card" key={room.src}>
+              <Image
+                src={room.src}
+                alt={room.alt}
+                width={900}
+                height={675}
+                sizes="(min-width: 981px) 25vw, 76vw"
+              />
+              <figcaption>{room.label}</figcaption>
+            </figure>
           ))}
         </div>
-      </article>
-    );
-  }
+        <p className="rail-hint" aria-hidden="true">
+          Swipe —
+        </p>
 
-  return (
-    <article className={`grid-tile tile-${tile.kind} tile-${tile.id}`} style={{ "--delay": `${index * 45}ms` }}>
-      <span className="tile-label">{tile.label}</span>
-      <h2>{tile.title}</h2>
-      {tile.id !== "mood" && tile.text ? <p>{tile.text}</p> : null}
-    </article>
-  );
-}
-
-function ThreeByThreeGrid() {
-  const primaryTiles = gridTiles.filter((tile) => !bookingTileKinds.has(tile.kind));
-
-  return (
-    <section className="grid-stage" aria-labelledby="main-heading">
-      {primaryTiles.map((tile, index) => (
-        <GridTile tile={tile} index={index} key={tile.id} />
-      ))}
-    </section>
-  );
-}
-
-function BookingBentoSection() {
-  const bookingTiles = gridTiles.filter((tile) => bookingTileKinds.has(tile.kind));
-
-  return (
-    <section className="grid-stage booking-stage" aria-label="予約導線">
-      {bookingTiles.map((tile, index) => (
-        <GridTile tile={tile} index={index} key={tile.id} />
-      ))}
-    </section>
-  );
-}
-
-function CompareSection() {
-  return (
-    <section className="section-band compare-band" id="compare" aria-labelledby="compare-heading">
-      <div className="section-heading">
-        <span className="tile-label">Compare</span>
-        <h2 id="compare-heading">選び方は、気分でシンプルに。</h2>
-      </div>
-      <div className="compare-table">
-        {hotels.map((hotel) => (
-          <article className={`compare-panel ${hotel.theme}`} key={hotel.id}>
-            <span>{hotel.label}</span>
-            <h3>{hotel.name}</h3>
-            <p>{hotel.description}</p>
-            <ul>
-              {hotel.points.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function PriceTableSection() {
-  return (
-    <section className="section-band price-band" id="price" aria-labelledby="price-heading">
-      <div className="section-heading split">
-        <div>
-          <span className="tile-label">Price</span>
-          <h2 id="price-heading">料金の目安</h2>
-        </div>
-        <p className="section-note">公式サイト掲載料金をもとにした目安です。最新条件は各公式サイトで確認してください。</p>
-      </div>
-      <div className="price-table-grid">
-        {hotels.map((hotel) => (
-          <article className={`price-table-card ${hotel.theme}`} key={hotel.id}>
-            <div className="price-table-head">
-              <span>{hotel.label}</span>
-              <h3>{hotel.shortName}</h3>
-            </div>
-            <div className="price-plan-list">
-              {hotel.pricePlans.map((plan) => (
-                <div className="price-plan" key={plan.name}>
-                  <p>{plan.name}</p>
-                  <dl>
-                    {plan.rows.map((row) => (
-                      <div key={`${plan.name}-${row.label}`}>
-                        <dt>{row.label}</dt>
-                        <dd>{row.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
+        <div className="hotel-foot" data-reveal>
+          <div>
+            <p
+              style={{
+                fontSize: "13.5px",
+                lineHeight: 1.9,
+                maxWidth: "34em",
+                marginBottom: "18px",
+              }}
+            >
+              {hotel.description}
+            </p>
+            <div className="tag-row">
+              {hotel.bestFor.map((tag) => (
+                <span key={tag}>{tag}</span>
               ))}
             </div>
-            <p className="price-note">{hotel.priceNote}</p>
-            <ExternalLink href={hotel.officialUrl} variant={hotel.theme === "shuffle" ? "gold" : "wine"}>
-              公式料金を見る
-            </ExternalLink>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SearchSummarySection() {
-  return (
-    <section className="section-band search-summary" aria-label="ホテル選びの要約">
-      <div className="answer-grid">
-        <article>
-          <h3>SHUFFLE</h3>
-          <p>
-            HOTEL SHUFFLEは、池袋駅C1出口近くで落ち着いた雰囲気を重視したい日に選びやすいホテルです。
-          </p>
-        </article>
-        <article>
-          <h3>REFRAIN</h3>
-          <p>
-            HOTEL REFRAINは、明るく入りやすい雰囲気で気軽な滞在に向いたホテルです。
-          </p>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function MapSection() {
-  return (
-    <section className="section-band map-band" id="map" aria-label="Google Map">
-      <div className="section-heading split">
-        <div>
-          <span className="tile-label">Map</span>
-        </div>
-        <p className="section-note">どちらも池袋駅C1出口近く。移動前に現在地からのルートを確認できます。</p>
-      </div>
-      <div className="map-grid">
-        {hotels.map((hotel) => (
-          <article className={`map-card ${hotel.theme}`} key={hotel.id}>
-            <div className="map-card-head">
-              <span>{hotel.label}</span>
-              <h3>{hotel.shortName}</h3>
-            </div>
-            <iframe
-              src={hotel.mapEmbedUrl}
-              title={`${hotel.name} Google Map`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-            <a className="map-link" href={hotel.mapUrl} target="_blank" rel="noreferrer">
-              Google Mapで開く <ArrowIcon />
-            </a>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function HotelSection({ hotel }) {
-  return (
-    <section className={`section-band hotel-band ${hotel.theme}`} id={hotel.id} aria-labelledby={`${hotel.id}-heading`}>
-      <div className="section-heading split">
-        <div>
-          <span className="tile-label">{hotel.tone}</span>
-          <h2 id={`${hotel.id}-heading`}>{hotel.name}</h2>
-        </div>
-        <ExternalLink href={hotel.officialUrl} variant="light">
-          公式サイト
-        </ExternalLink>
-      </div>
-
-      <p className="swipe-hint" aria-hidden="true">
-        Swipe
-        <span>客室カードを横にスワイプ</span>
-      </p>
-
-      <div className="room-grid" id={hotel.id === "shuffle" ? "rooms" : undefined}>
-        {hotel.rooms.map((room, index) => (
-          <figure className={index === 0 ? "room-card featured" : "room-card"} key={room.src}>
-            <SmartImage
-              src={room.src}
-              alt={room.alt}
-              sizes={index === 0 ? "(min-width: 980px) 50vw, 100vw" : "(min-width: 980px) 25vw, 100vw"}
-            />
-            <figcaption>{room.label}</figcaption>
-          </figure>
-        ))}
-        <article className="room-copy">
-          <span className="tile-label">Best for</span>
-          <h3>{hotel.summary}</h3>
-          <div className="tag-row">
-            {hotel.bestFor.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
           </div>
-          <PriceGuide>{hotel.priceGuide}</PriceGuide>
-          <ExternalLink href={hotel.bookingUrl} variant={hotel.theme === "shuffle" ? "gold" : "wine"}>
-            空室確認
-          </ExternalLink>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function StayScenesSection() {
-  return (
-    <section className="section-band stay-band" id="stay" aria-labelledby="stay-heading">
-      <div className="section-heading">
-        <span className="tile-label">Stay Scene</span>
-        <h2 id="stay-heading">ふたりの夜に、ちょうどいい空気を。</h2>
-      </div>
-      <div className="stay-scene-grid">
-        {hotels.map((hotel) => (
-          <article className={`stay-scene-panel ${hotel.theme}`} key={hotel.id}>
-            <div className="stay-scene-copy">
-              <span className="tile-label">{hotel.shortName}</span>
-              <h3>{hotel.tone}</h3>
-              <p>{hotel.summary}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+            <div className="price-guide-line">
+              <span className={`en-label ${isShuffle ? "" : "wine"}`}>Price</span>
+              <strong>{hotel.priceGuide}</strong>
             </div>
-            <div className="stay-scene-rail" aria-label={`${hotel.name}の滞在シーン`}>
-              {hotel.scenes.map((scene, index) => (
-                <figure className={index === 0 ? "stay-scene-card featured" : "stay-scene-card"} key={scene.src}>
-                  <SmartImage
-                    src={scene.src}
-                    alt={scene.alt}
-                    sizes={index === 0 ? "(min-width: 980px) 42vw, 86vw" : "(min-width: 980px) 20vw, 76vw"}
-                  />
-                  <figcaption>{scene.label}</figcaption>
-                </figure>
-              ))}
+            <div className="hotel-cta-row">
+              <a
+                className={`btn ${isShuffle ? "gold" : "wine"}`}
+                href={hotel.bookingUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                空室確認 <Arrow />
+              </a>
             </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function FaqSection() {
-  return (
-    <section className="section-band faq-band" aria-labelledby="faq-heading">
-      <div className="section-heading">
-        <span className="tile-label">FAQ</span>
-        <h2 id="faq-heading">予約前の小さな確認</h2>
-      </div>
-      <div className="faq-list">
-        {faqs.map((faq) => (
-          <article key={faq.question}>
-            <h3>{faq.question}</h3>
-            <p>{faq.answer}</p>
-          </article>
-        ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -386,41 +153,311 @@ function FaqSection() {
 export default function HomePage() {
   return (
     <>
-      <header className="top-bar" aria-label="ページナビゲーション">
-        <a className="top-bar-brand" href="/" aria-label="ページ上部へ">
+      <Reveal />
+
+      <header className="site-head" aria-label="ページナビゲーション">
+        <a className="brand" href="/" aria-label="ページ上部へ">
           SHUFFLE / REFRAIN
         </a>
         <nav aria-label="主要セクション">
           <a href="#price">料金</a>
+          <a href="#map">アクセス</a>
         </nav>
       </header>
 
       <main id="top">
-        <h1 className="sr-only" id="main-heading">
-          HOTEL SHUFFLE と HOTEL REFRAIN の統合サイト
-        </h1>
-        <ThreeByThreeGrid />
-        <StayScenesSection />
-        <SearchSummarySection />
-        <PriceTableSection />
-        <CompareSection />
-        <BookingBentoSection />
-        {hotels.map((hotel) => (
-          <HotelSection hotel={hotel} key={hotel.id} />
-        ))}
-        <MapSection />
-        <FaqSection />
+        {/* FV — 明暗スプリット */}
+        <section className="hero" aria-labelledby="main-heading">
+          <div className="hero-center">
+            <h1 id="main-heading">今夜は、どちらの気分。</h1>
+            <p>Ikebukuro — Two Hotels, One Exit</p>
+          </div>
+          <HeroPanel hotel={shuffle} catchCopy="少し背伸びした、静かな夜に。" priority />
+          <HeroPanel hotel={refrain} catchCopy="肩の力を抜いて、軽やかな夜に。" />
+          <span className="scroll-cue" aria-hidden="true">
+            Scroll
+          </span>
+        </section>
+
+        {/* 01 Mood */}
+        <section className="band light" id="mood" aria-labelledby="mood-heading">
+          <div className="band-inner">
+            <span className="ghost-num" aria-hidden="true">
+              01
+            </span>
+            <div className="band-head" data-reveal>
+              <span className="en-label">Mood</span>
+              <h2 id="mood-heading">
+                選ぶのは、
+                <br className="sp-br" />
+                部屋じゃなく気分。
+              </h2>
+              <p className="band-note">
+                どちらも池袋駅C1出口から徒歩約1分。違うのは、夜の過ごし方だけ。
+              </p>
+            </div>
+            <div className="mood-table" data-reveal style={{ "--d": "120ms" }}>
+              {moodRows.map((row) => (
+                <div className="mood-row" key={row.axis}>
+                  <span className="mood-axis">{row.axis}</span>
+                  <p className="mood-cell shuffle">
+                    <strong>SHUFFLE</strong>
+                    {row.shuffle}
+                  </p>
+                  <p className="mood-cell refrain">
+                    <strong>REFRAIN</strong>
+                    {row.refrain}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <section className="choice-guide" aria-labelledby="choice-guide-heading" data-reveal style={{ "--d": "180ms" }}>
+              <span className="en-label">Quick answer</span>
+              <h3 id="choice-guide-heading">どちらを選ぶ？</h3>
+              <ul>
+                <li>初めての利用やモダンな空間が好みなら HOTEL SHUFFLE。</li>
+                <li>隠れ家的なデザイナーズ空間でゆっくり過ごすなら HOTEL REFRAIN。</li>
+                <li>デイユース料金の安さを重視するなら HOTEL REFRAIN。</li>
+                <li>記念日や大人っぽい雰囲気を重視するなら HOTEL SHUFFLE。</li>
+              </ul>
+              <a
+                className="text-link choice-guide-link"
+                href="https://hotelshuffle.com/column/ikebukuro-lovehotel-recommend-choice-refrain-shuffle"
+                target="_blank"
+                rel="noreferrer"
+              >
+                SHUFFLEの池袋ホテル選びガイドを読む <Arrow />
+              </a>
+            </section>
+          </div>
+        </section>
+
+        {/* 02 SHUFFLE / 03 REFRAIN */}
+        <HotelBand hotel={shuffle} num="02" catchCopy="少し背伸びした、静かな夜に。" railId="rooms" />
+        <HotelBand hotel={refrain} num="03" catchCopy="肩の力を抜いて、軽やかな夜に。" />
+
+        {/* 04 Price — 暗室 */}
+        <section className="band dark raise" id="price" aria-labelledby="price-heading">
+          <div className="band-inner">
+            <span className="ghost-num" aria-hidden="true">
+              04
+            </span>
+            <div className="band-head" data-reveal>
+              <span className="en-label">Price</span>
+              <h2 id="price-heading">
+                夜の予算は、
+                <br className="sp-br" />
+                先にわかると安心。
+              </h2>
+              <p className="band-note">
+                公式サイト掲載料金をもとにした税込の目安です。最新条件は各予約ページで確認してください。
+              </p>
+            </div>
+            <div className="price-grid">
+              {hotels.map((hotel, index) => (
+                <div
+                  className={`price-col ${hotel.theme}`}
+                  key={hotel.id}
+                  data-reveal
+                  style={{ "--d": `${index * 120}ms` }}
+                >
+                  <div className="price-col-head">
+                    <h3>{hotel.shortName}</h3>
+                    <span className={`en-label ${hotel.theme === "shuffle" ? "" : "rose"}`}>
+                      {hotel.label}
+                    </span>
+                  </div>
+                  {hotel.pricePlans.map((plan) => (
+                    <div className="plan-group" key={plan.name}>
+                      <h4>{plan.name}</h4>
+                      <dl>
+                        {plan.rows.map((row) => (
+                          <div className="plan-row" key={`${plan.name}-${row.label}`}>
+                            <dt>{row.label}</dt>
+                            <dd>{row.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  ))}
+                  <p className="price-note">{hotel.priceNote}</p>
+                  <div className="price-cta-row">
+                    <a
+                      className={`btn ${hotel.theme === "shuffle" ? "gold" : "wine"}`}
+                      href={hotel.bookingUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      空室確認 <Arrow />
+                    </a>
+                    <a className="btn ghost-night" href={hotel.priceUrl} target="_blank" rel="noreferrer">
+                      {hotel.shortName}の休憩・宿泊料金 <Arrow />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 05 Scene */}
+        <section className="band light" id="stay" aria-labelledby="stay-heading">
+          <div className="band-inner">
+            <span className="ghost-num" aria-hidden="true">
+              05
+            </span>
+            <div className="band-head" data-reveal>
+              <span className="en-label">Stay Scene</span>
+              <h2 id="stay-heading">
+                ふたりの夜に、
+                <br className="sp-br" />
+                ちょうどいい空気を。
+              </h2>
+            </div>
+            {hotels.map((hotel, index) => (
+              <div className="scene-block" key={hotel.id} data-reveal style={{ "--d": `${index * 100}ms` }}>
+                <div className="scene-block-head">
+                  <h3>{hotel.shortName}</h3>
+                  <p>{hotel.tone}</p>
+                </div>
+                <div className="scene-rail" aria-label={`${hotel.name}の滞在シーン`}>
+                  {hotel.scenes.map((scene) => (
+                    <figure className="scene-card" key={scene.src}>
+                      <Image
+                        src={scene.src}
+                        alt={scene.alt}
+                        width={720}
+                        height={960}
+                        sizes="(min-width: 981px) 25vw, 66vw"
+                      />
+                      <figcaption>{scene.label}</figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 06 Access */}
+        <section className="band tint" id="map" aria-labelledby="access-heading">
+          <div className="band-inner">
+            <span className="ghost-num" aria-hidden="true">
+              06
+            </span>
+            <div className="band-head" data-reveal>
+              <span className="en-label">Access</span>
+              <h2 id="access-heading">C1出口から、すぐ近く。</h2>
+              <p className="band-note">
+                どちらも池袋駅C1出口のすぐ近く。現在地からのルートを確認できます。
+              </p>
+            </div>
+            <div className="access-grid">
+              {hotels.map((hotel, index) => (
+                <article className="map-card" key={hotel.id} data-reveal style={{ "--d": `${index * 120}ms` }}>
+                  <div className="map-card-head">
+                    <h3>{hotel.shortName}</h3>
+                    <span className={`en-label ${hotel.theme === "shuffle" ? "" : "wine"}`}>
+                      {hotel.label}
+                    </span>
+                  </div>
+                  <p className="map-address">
+                    〒{hotel.address.postalCode} {hotel.address.addressRegion}
+                    {hotel.address.addressLocality}
+                    {hotel.address.streetAddress}／{hotel.accessText}
+                  </p>
+                  <iframe
+                    src={hotel.mapEmbedUrl}
+                    title={`${hotel.name} Google Map`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  <a className="text-link" href={hotel.mapUrl} target="_blank" rel="noreferrer">
+                    Google Mapで開く <Arrow />
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 07 FAQ */}
+        <section className="band light" aria-labelledby="faq-heading">
+          <div className="band-inner">
+            <span className="ghost-num" aria-hidden="true">
+              07
+            </span>
+            <div className="band-head" data-reveal>
+              <span className="en-label">Q &amp; A</span>
+              <h2 id="faq-heading">予約前の小さな確認。</h2>
+            </div>
+            <div className="faq-rows" data-reveal style={{ "--d": "120ms" }}>
+              {faqs.map((faq) => (
+                <article key={faq.question}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 最終CTA */}
+        <section className="band dark final-cta" aria-label="予約">
+          <div className="band-inner">
+            <div data-reveal>
+              <span className="en-label">Booking</span>
+              <h2>迷ったら、今夜の気分で。</h2>
+              <p>空室状況と最新料金は、各予約ページで確認できます。</p>
+            </div>
+            <div className="final-cta-row" data-reveal style={{ "--d": "140ms" }}>
+              <a className="btn gold" href={shuffle.bookingUrl} target="_blank" rel="noreferrer">
+                SHUFFLE 空室確認 <Arrow />
+              </a>
+              <a className="btn wine" href={refrain.bookingUrl} target="_blank" rel="noreferrer">
+                REFRAIN 空室確認 <Arrow />
+              </a>
+            </div>
+            <div className="final-tel" data-reveal style={{ "--d": "220ms" }}>
+              {hotels.map((hotel) => (
+                <span key={hotel.id}>
+                  {hotel.shortName}
+                  <a href={`tel:${hotel.telephone.replace(/-/g, "")}`}>{hotel.telephone}</a>
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
+      <footer className="site-foot">
+        <div className="site-foot-inner">
+          <span className="brand">SHUFFLE / REFRAIN</span>
+          <nav aria-label="サイト内ページ">
+            <a href="/shuffle">SHUFFLE詳細</a>
+            <a href="/refrain">REFRAIN詳細</a>
+            <a href="/price">料金</a>
+            <a href="/access">アクセス</a>
+          </nav>
+          <small>&copy; HOTEL SHUFFLE / HOTEL REFRAIN — Ikebukuro</small>
+        </div>
+      </footer>
+
       <nav className="bottom-nav" aria-label="固定予約ナビゲーション">
-        <a href={hotels[0].bookingUrl} target="_blank" rel="noreferrer">
+        <a className="nav-shuffle" href={shuffle.bookingUrl} target="_blank" rel="noreferrer">
           SHUFFLE
+          <small>空室確認</small>
         </a>
-        <a href="#price">料金</a>
-        <a href={hotels[1].bookingUrl} target="_blank" rel="noreferrer">
+        <a className="nav-price" href="#price">
+          料金
+        </a>
+        <a className="nav-refrain" href={refrain.bookingUrl} target="_blank" rel="noreferrer">
           REFRAIN
+          <small>空室確認</small>
         </a>
       </nav>
+
+      <LineSignupPopup siteId="integrated" />
     </>
   );
 }

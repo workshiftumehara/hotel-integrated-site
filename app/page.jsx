@@ -55,7 +55,6 @@ function offerListForHotel(hotel) {
         priceCurrency: "JPY",
         description: row.value,
       },
-      availability: "https://schema.org/InStock",
       url: hotel.bookingUrl,
     })),
   );
@@ -81,7 +80,7 @@ export default function Page() {
           "池袋駅C1出口近くのHOTEL SHUFFLEとHOTEL REFRAINを、料金、Google Map、客室写真、予約導線で比較できるページです。",
         isPartOf: { "@id": `${siteUrl}/#website` },
         about: hotels.map((hotel) => ({ "@id": `${siteUrl}/#${hotel.id}` })),
-        dateModified: "2026-06-18",
+        dateModified: "2026-07-30",
         inLanguage: "ja",
       },
       ...hotels.map((hotel) => ({
@@ -104,7 +103,7 @@ export default function Page() {
           addressCountry: hotel.address.addressCountry,
         },
         makesOffer: offerListForHotel(hotel),
-        sameAs: [hotel.officialUrl, hotel.mapUrl],
+        sameAs: [hotel.officialUrl, hotel.mapUrl, hotel.bookingUrl],
       })),
       {
         "@type": "FAQPage",

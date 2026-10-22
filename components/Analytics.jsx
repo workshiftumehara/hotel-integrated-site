@@ -20,6 +20,20 @@ function sendEvent(name, params = {}) {
   });
 }
 
+function sendPageView(pathname) {
+  if (!GA_ID || typeof window === "undefined" || typeof window.gtag !== "function") {
+    return false;
+  }
+
+  window.gtag("event", "page_view", {
+    page_title: document.title,
+    page_path: pathname,
+    page_location: window.location.href,
+  });
+
+  return true;
+}
+
 function getElementLabel(element) {
   const headingId = element.getAttribute("aria-labelledby");
   const heading = headingId ? document.getElementById(headingId) : null;
@@ -55,17 +69,30 @@ function AnalyticsTracker() {
   const scrollDepthRef = useRef(new Set());
 
   useEffect(() => {
-    if (!GA_ID || typeof window === "undefined" || typeof window.gtag !== "function") {
+    if (!GA_ID || typeof window === "undefined") {
       return;
     }
 
-    window.gtag("config", GA_ID, {
-      page_path: pathname,
-      page_location: window.location.href,
-      send_page_view: true,
-    });
+    const trackPageView = () => {
+      if (sendPageView(pathname)) {
+        scrollDepthRef.current = new Set();
+        return true;
+      }
 
-    scrollDepthRef.current = new Set();
+      return false;
+    };
+
+    if (trackPageView()) {
+      return;
+    }
+
+    window.addEventListener("ga4-ready", trackPageView, { once: true });
+    const retryId = window.setTimeout(trackPageView, 1000);
+
+    return () => {
+      window.removeEventListener("ga4-ready", trackPageView);
+      window.clearTimeout(retryId);
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -215,6 +242,7 @@ export default function Analytics() {
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', '${GA_ID}', { send_page_view: false });
+          window.dispatchEvent(new Event('ga4-ready'));
         `}
       </Script>
       <AnalyticsTracker />

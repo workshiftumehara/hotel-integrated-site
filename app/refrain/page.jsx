@@ -1,4 +1,5 @@
 import { HotelDetailPage } from "@/components/HotelSubPages";
+import LineSignupPopup from "@/components/LineSignupPopup";
 
 export const metadata = {
   title: "HOTEL REFRAIN 詳細｜料金・客室・アクセス",
@@ -9,5 +10,10 @@ export const metadata = {
 };
 
 export default function RefrainPage() {
-  return <HotelDetailPage hotelId="refrain" />;
+  return (
+    <>
+      <HotelDetailPage hotelId="refrain" />
+      <LineSignupPopup siteId="refrain" />
+    </>
+  );
 }
