@@ -40,11 +40,15 @@ function sendPopupEvent(name, config, extra = {}) {
     return;
   }
 
+  const hotel =
+    config.siteId === "shuffle" || config.siteId === "refrain" ? config.siteId : "both";
+
   window.gtag("event", name, {
     page_location: window.location.href,
     page_path: window.location.pathname,
     popup_name: config.popupName,
     site_id: config.siteId,
+    hotel,
     locale: document.documentElement.lang || "ja",
     ...extra,
   });
@@ -304,7 +308,7 @@ export default function LineSignupPopup({ siteId = "integrated" }) {
           rel="noreferrer"
           onClick={handleLineClick}
         >
-          公式LINEを友だち追加
+          {config.ctaLabel}
           <span aria-hidden="true">↗</span>
         </a>
 

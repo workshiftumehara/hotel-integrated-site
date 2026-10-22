@@ -4,7 +4,13 @@ import Script from "next/script";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-CLTBCP9MYM";
+const LINKER_DOMAINS = [
+  "hotelshuffle.com",
+  "www.hotelshuffle.com",
+  "hotelrefrain.com",
+  "www.hotelrefrain.com",
+];
 const READ_THRESHOLD_MS = 8000;
 const ENGAGEMENT_THRESHOLD_MS = 1500;
 
@@ -49,18 +55,55 @@ function getElementLabel(element) {
   return String(label).trim().replace(/\s+/g, " ").slice(0, 120);
 }
 
+function hotelFromAnchor(anchor, url) {
+  const explicit = anchor.dataset.hotel;
+  if (explicit === "shuffle" || explicit === "refrain" || explicit === "both") {
+    return explicit;
+  }
+
+  const href = `${url} ${anchor.getAttribute("href") || ""}`.toLowerCase();
+  if (href.includes("hotelshuffle.com") || href.includes("/hotel/jp/shuffle") || href.includes("tel:0339828071")) {
+    return "shuffle";
+  }
+  if (href.includes("hotelrefrain.com") || href.includes("/hotel/jp/refrain") || href.includes("tel:0359502717")) {
+    return "refrain";
+  }
+
+  return undefined;
+}
+
 function classifyLink(anchor) {
   const href = anchor.getAttribute("href") || "";
   const url = anchor.href || href;
+  const lowered = `${href} ${url}`.toLowerCase();
+  const forced = anchor.dataset.analyticsEvent;
 
-  if (url.includes("booking.com")) return "booking_click";
-  if (url.includes("google.com/maps") || url.includes("maps.app.goo.gl")) return "map_click";
-  if (url.includes("hotelshuffle.com") || url.includes("hotelrefrain.com")) return "official_site_click";
-  if (href.startsWith("#") || url.includes("shuffle-refrain.com") || url.startsWith(window.location.origin)) {
-    return "internal_navigation_click";
+  let eventName = forced;
+  if (!eventName) {
+    if (lowered.includes("tel:")) eventName = "tel_click";
+    else if (
+      lowered.includes("line.shuffle-refrain.com") ||
+      lowered.includes("line.me") ||
+      lowered.includes("lin.ee")
+    ) {
+      eventName = "line_click";
+    } else if (lowered.includes("booking.com")) eventName = "booking_click";
+    else if (lowered.includes("google.com/maps") || lowered.includes("maps.app.goo.gl")) eventName = "map_click";
+    else if (lowered.includes("hotelshuffle.com") || lowered.includes("hotelrefrain.com")) {
+      eventName = "official_site_click";
+    } else if (
+      href.startsWith("#") ||
+      lowered.includes("shuffle-refrain.com") ||
+      url.startsWith(window.location.origin)
+    ) {
+      eventName = "internal_navigation_click";
+    } else eventName = "outbound_click";
   }
 
-  return "outbound_click";
+  return {
+    eventName,
+    hotel: hotelFromAnchor(anchor, url),
+  };
 }
 
 function AnalyticsTracker() {
@@ -102,12 +145,21 @@ function AnalyticsTracker() {
 
     const handleClick = (event) => {
       const anchor = event.target.closest?.("a");
-      if (!anchor) return;
+      if (!anchor || anchor.closest(".line-popup-card")) return;
 
-      sendEvent(classifyLink(anchor), {
+      const { eventName, hotel } = classifyLink(anchor);
+      const params = {
         link_text: (anchor.textContent || "").trim().replace(/\s+/g, " ").slice(0, 120),
         link_url: anchor.href || anchor.getAttribute("href"),
-      });
+      };
+      if (
+        hotel &&
+        ["booking_click", "tel_click", "line_click", "official_site_click"].includes(eventName)
+      ) {
+        params.hotel = hotel;
+      }
+
+      sendEvent(eventName, params);
     };
 
     document.addEventListener("click", handleClick);
@@ -241,7 +293,13 @@ export default function Analytics() {
           function gtag(){dataLayer.push(arguments);}
           window.gtag = gtag;
           gtag('js', new Date());
-          gtag('config', '${GA_ID}', { send_page_view: false });
+          gtag('config', '${GA_ID}', {
+            send_page_view: false,
+            linker: {
+              domains: ${JSON.stringify(LINKER_DOMAINS)},
+              accept_incoming: true
+            }
+          });
           window.dispatchEvent(new Event('ga4-ready'));
         `}
       </Script>

@@ -1,7 +1,7 @@
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shuffle-refrain.com";
 
 export default function sitemap() {
-  const lastModified = new Date("2026-07-30");
+  const lastModified = new Date("2026-10-22");
 
   return [
     {

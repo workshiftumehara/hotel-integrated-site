@@ -1,5 +1,8 @@
 import Image from "next/image";
-import { hotels } from "@/lib/hotels";
+import LineCouponLink from "@/components/LineCouponLink";
+import PriceTiers from "@/components/PriceTiers";
+import { hotelJsonLd } from "@/lib/schema";
+import { hotels, stayPolicy } from "@/lib/hotels";
 
 const siteNav = [
   { href: "/", label: "比較トップ" },
@@ -74,13 +77,16 @@ function HotelCard({ hotel }) {
       </div>
       <PriceRows hotel={hotel} />
       <div className="sub-action-row">
-        <a href={hotel.bookingUrl} target="_blank" rel="noreferrer">
+        <a href={hotel.bookingUrl} target="_blank" rel="noreferrer" data-hotel={hotel.id}>
           空室確認 <ArrowIcon />
         </a>
-        <a href={hotel.officialUrl} target="_blank" rel="noreferrer">
+        <a href={hotel.officialUrl} target="_blank" rel="noreferrer" data-hotel={hotel.id}>
           公式サイト <ArrowIcon />
         </a>
+        <LineCouponLink hotel={hotel.id} variant="text" className="line-link" />
       </div>
+      {hotel.priceTiers ? <PriceTiers tiers={hotel.priceTiers} tone="paper" /> : null}
+      <p className="sub-policy">{stayPolicy}</p>
     </article>
   );
 }
@@ -91,8 +97,8 @@ export function HotelDetailPage({ hotelId }) {
   return (
     <SubPageShell
       eyebrow={hotel.label}
-      title={`${hotel.shortName}を詳しく見る`}
-      lead={`${hotel.shortName}の雰囲気、客室写真、料金、アクセス、予約導線をまとめました。`}
+      title={hotel.pageTitle}
+      lead={`${hotel.accessText}。料金、客室、駐車場、チェックアウトを公式サイトの案内に合わせてまとめています。`}
     >
       <section className={`subpage-section hotel-detail ${hotel.theme}`}>
         <div className="detail-visual">
@@ -107,13 +113,32 @@ export function HotelDetailPage({ hotelId }) {
               <span key={tag}>{tag}</span>
             ))}
           </div>
+          <dl className="fact-list">
+            <div>
+              <dt>チェックアウト</dt>
+              <dd>通常12:00。午前1時以降の入室は12時間保証</dd>
+            </div>
+            <div>
+              <dt>同室人数</dt>
+              <dd>{hotel.occupancy}</dd>
+            </div>
+            <div>
+              <dt>外出</dt>
+              <dd>{hotel.goingOut}</dd>
+            </div>
+            <div>
+              <dt>駐車場</dt>
+              <dd>{hotel.parking}</dd>
+            </div>
+          </dl>
           <div className="sub-action-row">
-            <a href={hotel.bookingUrl} target="_blank" rel="noreferrer">
+            <a href={hotel.bookingUrl} target="_blank" rel="noreferrer" data-hotel={hotel.id}>
               空室確認 <ArrowIcon />
             </a>
-            <a href={hotel.officialUrl} target="_blank" rel="noreferrer">
+            <a href={hotel.officialUrl} target="_blank" rel="noreferrer" data-hotel={hotel.id}>
               公式サイト <ArrowIcon />
             </a>
+            <LineCouponLink hotel={hotel.id} variant="text" className="line-link" />
           </div>
         </div>
       </section>
@@ -154,7 +179,12 @@ export function HotelDetailPage({ hotelId }) {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
         />
+        <p className="sub-policy">{hotel.parking}</p>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(hotelJsonLd(hotel)) }}
+      />
     </SubPageShell>
   );
 }
@@ -163,8 +193,8 @@ export function PricePage() {
   return (
     <SubPageShell
       eyebrow="Price"
-      title="料金を比較する"
-      lead="SHUFFLEとREFRAINのREST / STAYの目安を、予約前にまとめて確認できます。"
+      title="池袋駅C1出口のホテル料金"
+      lead="SHUFFLEは平日・土日祝と曜日別、REFRAINはREST 2時間〜の目安です。空室と最終料金は予約ページで確認できます。"
     >
       <section className="subpage-section sub-two-col">
         {hotels.map((hotel) => (
@@ -189,6 +219,7 @@ export function AccessPage() {
               <span className="tile-label">{hotel.label}</span>
               <h2>{hotel.shortName}</h2>
               <p>{hotel.accessText}</p>
+              <p>{hotel.parking}</p>
             </div>
             <iframe
               className="sub-map"

@@ -41,10 +41,10 @@ export const metadata = {
     siteName: "HOTEL SHUFFLE / REFRAIN",
     images: [
       {
-        url: "/images/hotel-shuffle-fv.png",
-        width: 1200,
-        height: 900,
-        alt: "HOTEL SHUFFLE 池袋",
+        url: "/images/hotel-shuffle-fv.jpg",
+        width: 1086,
+        height: 1448,
+        alt: "池袋駅C1出口徒歩1分のHOTEL SHUFFLE",
       },
     ],
   },
@@ -53,7 +53,7 @@ export const metadata = {
     title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
     description:
       "池袋駅C1出口近くの2ホテルを、料金・地図・客室写真で比較できます。",
-    images: ["/images/hotel-shuffle-fv.png"],
+    images: ["/images/hotel-shuffle-fv.jpg"],
   },
 };
 

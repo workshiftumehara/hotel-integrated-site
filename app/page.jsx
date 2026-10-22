@@ -1,8 +1,8 @@
 import HomePage from "@/components/HomePage";
 import UrlCleanup from "@/components/UrlCleanup";
 import { faqs, hotels } from "@/lib/hotels";
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shuffle-refrain.com";
+import { hotelNode } from "@/lib/schema";
+import { siteUrl } from "@/lib/site";
 
 export const metadata = {
   title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
@@ -10,10 +10,12 @@ export const metadata = {
     "池袋駅C1出口近くのHOTEL SHUFFLEとHOTEL REFRAINを、料金、客室写真、地図、予約導線までまとめて比較できます。",
   keywords: [
     "池袋 ホテル",
-    "池袋 ラブホテル",
+    "池袋 プライベートホテル",
+    "池袋駅 C1出口",
     "HOTEL SHUFFLE",
     "HOTEL REFRAIN",
     "池袋 ホテル 料金",
+    "池袋 デイユース",
     "池袋 ホテル 地図",
   ],
   alternates: {
@@ -29,10 +31,10 @@ export const metadata = {
     locale: "ja_JP",
     images: [
       {
-        url: "/images/hotel-shuffle-fv.png",
-        width: 1200,
-        height: 900,
-        alt: "HOTEL SHUFFLE 池袋",
+        url: "/images/hotel-shuffle-fv.jpg",
+        width: 1086,
+        height: 1448,
+        alt: "池袋駅C1出口徒歩1分のHOTEL SHUFFLE",
       },
     ],
   },
@@ -41,24 +43,9 @@ export const metadata = {
     title: "池袋のホテル比較 | HOTEL SHUFFLE・HOTEL REFRAIN",
     description:
       "池袋駅C1出口近くの2ホテルを、料金・地図・客室写真で比較できます。",
-    images: ["/images/hotel-shuffle-fv.png"],
+    images: ["/images/hotel-shuffle-fv.jpg"],
   },
 };
-
-function offerListForHotel(hotel) {
-  return hotel.pricePlans.flatMap((plan) =>
-    plan.rows.map((row) => ({
-      "@type": "Offer",
-      name: `${hotel.shortName} ${plan.name} ${row.label}`,
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        priceCurrency: "JPY",
-        description: row.value,
-      },
-      url: hotel.bookingUrl,
-    })),
-  );
-}
 
 export default function Page() {
   const structuredData = {
@@ -79,32 +66,11 @@ export default function Page() {
         description:
           "池袋駅C1出口近くのHOTEL SHUFFLEとHOTEL REFRAINを、料金、Google Map、客室写真、予約導線で比較できるページです。",
         isPartOf: { "@id": `${siteUrl}/#website` },
-        about: hotels.map((hotel) => ({ "@id": `${siteUrl}/#${hotel.id}` })),
-        dateModified: "2026-07-30",
+        about: hotels.map((hotel) => ({ "@id": `${siteUrl}/${hotel.id}#hotel` })),
+        dateModified: "2026-10-22",
         inLanguage: "ja",
       },
-      ...hotels.map((hotel) => ({
-        "@type": ["Hotel", "LodgingBusiness"],
-        "@id": `${siteUrl}/#${hotel.id}`,
-        name: hotel.name,
-        alternateName: hotel.shortName,
-        description: hotel.seoDescription || hotel.description,
-        url: hotel.officialUrl,
-        telephone: hotel.telephone,
-        image: [hotel.image, ...hotel.rooms.map((room) => room.src)],
-        priceRange: hotel.priceGuide,
-        hasMap: hotel.mapUrl,
-        address: {
-          "@type": "PostalAddress",
-          postalCode: hotel.address.postalCode,
-          streetAddress: hotel.address.streetAddress,
-          addressLocality: hotel.address.addressLocality,
-          addressRegion: hotel.address.addressRegion,
-          addressCountry: hotel.address.addressCountry,
-        },
-        makesOffer: offerListForHotel(hotel),
-        sameAs: [hotel.officialUrl, hotel.mapUrl, hotel.bookingUrl],
-      })),
+      ...hotels.map((hotel) => hotelNode(hotel)),
       {
         "@type": "FAQPage",
         "@id": `${siteUrl}/#faq`,

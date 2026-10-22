@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import LineSignupPopup from "@/components/LineSignupPopup";
-import { faqs, hotels } from "@/lib/hotels";
+import LineCouponLink from "@/components/LineCouponLink";
+import OfficialNews from "@/components/OfficialNews";
+import PriceTiers from "@/components/PriceTiers";
+import { lineCoupon } from "@/lib/line-coupon";
+import { faqs, hotels, stayPolicy } from "@/lib/hotels";
 
 const [shuffle, refrain] = hotels;
 
@@ -56,10 +60,17 @@ function HeroPanel({ hotel, catchCopy, priority }) {
             href={hotel.officialUrl}
             target="_blank"
             rel="noreferrer"
+            data-hotel={hotel.id}
           >
             公式HP <Arrow />
           </a>
-          <a className="text-link" href={hotel.officialUrl} target="_blank" rel="noreferrer">
+          <a
+            className="text-link"
+            href={hotel.officialUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-hotel={hotel.id}
+          >
             詳しく <Arrow />
           </a>
         </div>
@@ -87,7 +98,13 @@ function HotelBand({ hotel, num, catchCopy, railId }) {
             <h2 id={`${hotel.id}-heading`}>{hotel.shortName}</h2>
             <p className="hotel-catch">{catchCopy}</p>
           </div>
-          <a className="text-link" href={hotel.officialUrl} target="_blank" rel="noreferrer">
+          <a
+            className="text-link"
+            href={hotel.officialUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-hotel={hotel.id}
+          >
             公式サイト <Arrow />
           </a>
         </div>
@@ -139,9 +156,11 @@ function HotelBand({ hotel, num, catchCopy, railId }) {
                 href={hotel.bookingUrl}
                 target="_blank"
                 rel="noreferrer"
+                data-hotel={hotel.id}
               >
                 空室確認 <Arrow />
               </a>
+              <LineCouponLink hotel={hotel.id} variant="text" />
             </div>
           </div>
         </div>
@@ -168,9 +187,10 @@ export default function HomePage() {
       <main id="top">
         {/* FV — 明暗スプリット */}
         <section className="hero" aria-labelledby="main-heading">
-          <div className="hero-center">
-            <h1 id="main-heading">今夜は、どちらの気分。</h1>
-            <p>Ikebukuro — Two Hotels, One Exit</p>
+            <div className="hero-center">
+            <h1 id="main-heading">池袋駅C1出口徒歩1分のホテル SHUFFLE・REFRAIN</h1>
+            <p className="hero-tagline">今夜は、どちらの気分。</p>
+            <p className="hero-en">Ikebukuro — Two Hotels, One Exit</p>
           </div>
           <HeroPanel hotel={shuffle} catchCopy="少し背伸びした、静かな夜に。" priority />
           <HeroPanel hotel={refrain} catchCopy="肩の力を抜いて、軽やかな夜に。" />
@@ -250,7 +270,7 @@ export default function HomePage() {
                 先にわかると安心。
               </h2>
               <p className="band-note">
-                公式サイト掲載料金をもとにした税込の目安です。最新条件は各予約ページで確認してください。
+                公式サイト掲載料金をもとにした税込の目安です。{stayPolicy}
               </p>
             </div>
             <div className="price-grid">
@@ -272,7 +292,10 @@ export default function HomePage() {
                       <h4>{plan.name}</h4>
                       <dl>
                         {plan.rows.map((row) => (
-                          <div className="plan-row" key={`${plan.name}-${row.label}`}>
+                          <div
+                            className={`plan-row${plan.compact ? " is-compact" : ""}`}
+                            key={`${plan.name}-${row.label}`}
+                          >
                             <dt>{row.label}</dt>
                             <dd>{row.value}</dd>
                           </div>
@@ -287,16 +310,29 @@ export default function HomePage() {
                       href={hotel.bookingUrl}
                       target="_blank"
                       rel="noreferrer"
+                      data-hotel={hotel.id}
                     >
                       空室確認 <Arrow />
                     </a>
-                    <a className="btn ghost-night" href={hotel.priceUrl} target="_blank" rel="noreferrer">
+                    <LineCouponLink hotel={hotel.id} variant="button" />
+                    <a
+                      className="btn ghost-night"
+                      href={hotel.priceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-hotel={hotel.id}
+                    >
                       {hotel.shortName}の休憩・宿泊料金 <Arrow />
                     </a>
                   </div>
                 </div>
               ))}
             </div>
+            {hotels
+              .filter((hotel) => hotel.priceTiers)
+              .map((hotel) => (
+                <PriceTiers tiers={hotel.priceTiers} key={`${hotel.id}-tiers`} />
+              ))}
           </div>
         </section>
 
@@ -366,6 +402,7 @@ export default function HomePage() {
                     {hotel.address.addressLocality}
                     {hotel.address.streetAddress}／{hotel.accessText}
                   </p>
+                  <p className="map-address">{hotel.parking}</p>
                   <iframe
                     src={hotel.mapEmbedUrl}
                     title={`${hotel.name} Google Map`}
@@ -381,11 +418,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 07 FAQ */}
+        <OfficialNews />
+
+        {/* 08 FAQ */}
         <section className="band light" aria-labelledby="faq-heading">
           <div className="band-inner">
             <span className="ghost-num" aria-hidden="true">
-              07
+              08
             </span>
             <div className="band-head" data-reveal>
               <span className="en-label">Q &amp; A</span>
@@ -411,18 +450,36 @@ export default function HomePage() {
               <p>空室状況と最新料金は、各予約ページで確認できます。</p>
             </div>
             <div className="final-cta-row" data-reveal style={{ "--d": "140ms" }}>
-              <a className="btn gold" href={shuffle.bookingUrl} target="_blank" rel="noreferrer">
+              <a
+                className="btn gold"
+                href={shuffle.bookingUrl}
+                target="_blank"
+                rel="noreferrer"
+                data-hotel="shuffle"
+              >
                 SHUFFLE 空室確認 <Arrow />
               </a>
-              <a className="btn wine" href={refrain.bookingUrl} target="_blank" rel="noreferrer">
+              <a
+                className="btn wine"
+                href={refrain.bookingUrl}
+                target="_blank"
+                rel="noreferrer"
+                data-hotel="refrain"
+              >
                 REFRAIN 空室確認 <Arrow />
               </a>
+              <LineCouponLink hotel="both" variant="button" />
             </div>
+            <p className="final-line-note" data-reveal style={{ "--d": "180ms" }}>
+              {lineCoupon.note}
+            </p>
             <div className="final-tel" data-reveal style={{ "--d": "220ms" }}>
               {hotels.map((hotel) => (
                 <span key={hotel.id}>
                   {hotel.shortName}
-                  <a href={`tel:${hotel.telephone.replace(/-/g, "")}`}>{hotel.telephone}</a>
+                  <a href={`tel:${hotel.telephone.replace(/-/g, "")}`} data-hotel={hotel.id}>
+                    {hotel.telephone}
+                  </a>
                 </span>
               ))}
             </div>
@@ -443,19 +500,34 @@ export default function HomePage() {
         </div>
       </footer>
 
-      <nav className="bottom-nav" aria-label="固定予約ナビゲーション">
-        <a className="nav-shuffle" href={shuffle.bookingUrl} target="_blank" rel="noreferrer">
-          SHUFFLE
-          <small>空室確認</small>
-        </a>
-        <a className="nav-price" href="#price">
-          料金
-        </a>
-        <a className="nav-refrain" href={refrain.bookingUrl} target="_blank" rel="noreferrer">
-          REFRAIN
-          <small>空室確認</small>
-        </a>
-      </nav>
+      <div className="bottom-dock">
+        <LineCouponLink hotel="both" variant="sticky" />
+        <nav className="bottom-nav" aria-label="固定予約ナビゲーション">
+          <a
+            className="nav-shuffle"
+            href={shuffle.bookingUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-hotel="shuffle"
+          >
+            SHUFFLE
+            <small>空室確認</small>
+          </a>
+          <a className="nav-price" href="#price">
+            料金
+          </a>
+          <a
+            className="nav-refrain"
+            href={refrain.bookingUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-hotel="refrain"
+          >
+            REFRAIN
+            <small>空室確認</small>
+          </a>
+        </nav>
+      </div>
 
       <LineSignupPopup siteId="integrated" />
     </>
